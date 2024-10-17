@@ -1,0 +1,68 @@
+import random
+import json
+
+def loadCards():
+    try:
+        with open("cards.json", "r") as f:
+            flashcards = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        flashcards = []
+    return flashcards
+
+def saveFlashcards(cards):
+    with open("cards.json", "w") as f: 
+        json.dump(cards, f, indent=4)
+
+def addCard(cards):
+    question = input("What is your question?\n")
+    answer = input("What is your answer?\n")
+    newCard = {"question": question, "answer": answer}
+    cards.append(newCard)
+    saveFlashcards(cards)
+    
+
+def deleteCard(cards):
+    if not cards:
+        print("No flashcards to delete.")
+        return
+    
+    for i, card in enumerate(cards):
+        print(f"{i+1}. {card['question']}")
+        
+    index = int(input("Which question would you like to delete?")) - 1
+    if 0 <= index < len(cards):
+        cards.pop(index)
+        print("Card deleted!")
+    else:
+        print("Invalid index.")
+
+
+def showCards(cards):
+    if not cards:
+        print("No flashcards to show.")
+        return
+    
+    for i, card in enumerate(cards):
+        print(f"{i+1}. Q: {card['question']} - A: {card['answer']}")
+
+
+
+def flashCardApp():
+    flashcards = loadCards()
+    print("Welcome to the Flashcard App!")
+    while True:
+        action = input("What would you like to do? (Add, Delete, Show, Exit)\n").lower()
+
+        if action == 'add':
+            addCard(flashcards)
+        elif action == 'delete':
+            deleteCard(flashcards)
+        elif action == 'show':
+            showCards(flashcards)
+        elif action == 'exit':
+            break
+        else:
+            print("Invalid option. Please choose Add, Delete, Show, or Exit.")
+            
+flashCardApp()
+
